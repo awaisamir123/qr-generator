@@ -17,8 +17,7 @@ class QrController extends Controller
      */
     public function index()
     {
-        dd('index');
-//        return view('index',$data);
+
     }
 
     /**
