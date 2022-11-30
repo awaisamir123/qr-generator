@@ -66,7 +66,7 @@ class QrController extends Controller
         QrCode::size($request->size)
             ->backgroundColor($bgR, $bgG, $bgB)
             ->color($fillR, $fillG, $fillB)
-            ->generate("$request->qr_content", public_path("qr-codes-svg/$qrName.svg"));
+            ->generate($request->qr_content, public_path("qr-codes-svg/$qrName.svg"));
 
         $request['bg_color'] = "$bgR, $bgG, $bgB";
         $request['fill_color'] = "$fillR, $fillG, $fillB";
