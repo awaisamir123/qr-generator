@@ -27,9 +27,10 @@ class AuthenticatedSessionController extends Controller
         $user = User::whereEmail($request->email)->first();
 
         $user->tokens()->delete();
+
         $token = $user->createToken("login:user{$user->id}")->plainTextToken;
 
-        return response()->json(['token' => $token], Response::HTTP_OK);
+        return response()->json(['token' => $token, 'data'=>$user], Response::HTTP_OK);
     }
 
     /**

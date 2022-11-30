@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return view('test');
     return ['Laravel' => app()->version()];
 });
 
+Route::resource('qr-code', \App\Http\Controllers\QrController::class);
 
 
 

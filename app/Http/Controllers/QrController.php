@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QrGenerator;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use \SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -16,12 +17,7 @@ class QrController extends Controller
      */
     public function index()
     {
-
-       QrCode::size('500')
-           ->backgroundColor(255, 0, 0)
-           ->color(0, 0, 255, 25)
-           ->generate('testing QR', public_path('qr-codes-svg/qrcode132.svg') );
-
+        dd('index');
 //        return view('index',$data);
     }
 
@@ -43,21 +39,30 @@ class QrController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $validation = Validator::make($request->all(), [
             'qr_content'=>'required',
             'size'=>'required',
             'bg_color'=>'required',
             'fill_color'=>'required',
         ]);
-
-        QrCode::size($request->size)
-            ->backgroundColor($request->bg_color)
-            ->color($request->fill_color)
-            ->generate("$request->qr_content", public_path('qr-codes-svg/qrcode132.svg') );
-
         if($validation->fails()) {
             return response()->json(['errors'=> $validation->errors()], Response::HTTP_BAD_REQUEST);
         }
+
+        $qrName = self::characterGenerator(2).time().self::characterGenerator(3);
+
+        QrCode::size($request->size)
+            ->backgroundColor(102, 0, 204)
+            ->color(100, 112, 122)
+            ->generate("$request->qr_content", public_path("qr-codes-svg/$qrName.svg") );
+
+        $request['svg_url'] = asset('qr-codes-svg/'.$qrName.'.svg');
+
+        $qrCode = QrGenerator::create($request->all());
+
+        dd($qrCode);
+
 
     }
 
@@ -104,5 +109,15 @@ class QrController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function characterGenerator($length=5) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
