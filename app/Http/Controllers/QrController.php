@@ -72,8 +72,6 @@ class QrController extends Controller
         $request['fill_color'] = "$fillR, $fillG, $fillB";
         $request['svg_url'] = asset('qr-codes-svg/'.$qrName.'.svg');
 
-        $this->qrRepository->create($request->all());
-
         return response()->json(['qrData'=>$this->qrRepository->create($request->all())], Response::HTTP_OK);
     }
 
