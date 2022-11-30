@@ -60,9 +60,8 @@ class QrController extends Controller
 
         $qrName = self::characterGenerator(2).time().self::characterGenerator(3);
 
-
-        list($bgR, $bgG, $bgB) = sscanf(isset($request->bg_color)?$request->bg_color:"#000", '#%02x%02x%02x');
-        list($fillR, $fillG, $fillB) = sscanf(isset($request->fill_color)?$request->fill_color:"#fff", '#%02x%02x%02x');
+        list($bgR, $bgG, $bgB) = sscanf(isset($request->bg_color)?$request->bg_color:"#000000", '#%02x%02x%02x');
+        list($fillR, $fillG, $fillB) = sscanf(isset($request->fill_color)?$request->fill_color:"#ffffff", '#%02x%02x%02x');
 
         QrCode::size($request->size)
             ->backgroundColor($bgR, $bgG, $bgB)
@@ -74,6 +73,7 @@ class QrController extends Controller
         $request['svg_url'] = asset('qr-codes-svg/'.$qrName.'.svg');
 
         $this->qrRepository->create($request->all());
+
         return response()->json(['qrData'=>$this->qrRepository->create($request->all())], Response::HTTP_OK);
     }
 
