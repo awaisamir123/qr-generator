@@ -6,7 +6,6 @@ use App\Models\QrGenerator;
 use App\Repository\QrRepositoryInterface;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use \SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 
 class QrController extends Controller
@@ -57,20 +56,6 @@ class QrController extends Controller
         if($validation->fails()) {
             return response()->json(['errors'=> $validation->errors()], Response::HTTP_BAD_REQUEST);
         }
-
-        $qrName = self::characterGenerator(2).time().self::characterGenerator(3);
-
-        list($bgR, $bgG, $bgB) = sscanf(isset($request->bg_color)?$request->bg_color:"#000000", '#%02x%02x%02x');
-        list($fillR, $fillG, $fillB) = sscanf(isset($request->fill_color)?$request->fill_color:"#ffffff", '#%02x%02x%02x');
-
-        QrCode::size($request->size)
-            ->backgroundColor($bgR, $bgG, $bgB)
-            ->color($fillR, $fillG, $fillB)
-            ->generate($request->qr_content, public_path("qr-codes-svg/$qrName.svg"));
-
-        $request['bg_color'] = "$bgR, $bgG, $bgB";
-        $request['fill_color'] = "$fillR, $fillG, $fillB";
-        $request['svg_url'] = asset('qr-codes-svg/'.$qrName.'.svg');
 
         return response()->json(['qrData'=>$this->qrRepository->create($request->all())], Response::HTTP_OK);
     }
